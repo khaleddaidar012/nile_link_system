@@ -7,6 +7,20 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts")
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/pages/login.html",
+        destination: "/en/login",
+        permanent: false,
+      },
+      {
+        source: "/:locale/pages/login.html",
+        destination: "/:locale/login",
+        permanent: false,
+      },
+    ]
+  },
   images: {
     unoptimized: true,
     formats: ["image/avif", "image/webp"],
