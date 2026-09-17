@@ -17,7 +17,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1118.0",
     "@aws-sdk/s3-request-presigner": "^3.1118.0",
-    "@headlessui/react": "^2.2.10",
+    "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^5.4.0",
     "@opennextjs/cloudflare": "1.20.0",
     "clsx": "^2.1.1",
@@ -33,10 +33,13 @@
     "nodemailer": "^9.0.3",
     "qrcode.react": "^4.2.0",
     "react": "19.2.4",
+    "react-aria": "^3.52.1",
     "react-barcode": "^1.6.1",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.81.0",
     "react-icons": "^5.7.0",
+    "react-is": "^19.3.0",
+    "react-stately": "^3.50.0",
     "recharts": "^3.9.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
@@ -44,6 +47,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.1",
