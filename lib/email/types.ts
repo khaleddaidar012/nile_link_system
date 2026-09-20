@@ -2,6 +2,7 @@ export interface EmailConfig {
   provider: "smtp" | "resend" | "ses"
   from: string
   to: string
+  resendApiKey?: string
   smtpHost?: string
   smtpPort?: number
   smtpUser?: string

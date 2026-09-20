@@ -570,7 +570,12 @@
       "critical": "Alert: Document Rejected or Expired",
       "renewBtn": "Update Document",
       "allValid": "All Documents Valid",
-      "allValidSub": "Your corporate compliance documents are up to date and verified."
+      "allValidSub": "Your corporate compliance documents are up to date and verified.",
+      "quickActionTitle": "Upload Required Documents",
+      "quickActionDesc": "Please upload official company documents (Commercial Register, Tax Card) to complete account verification.",
+      "newAccountUploadTitle": "Upload Verification Documents Required",
+      "newAccountUploadDesc": "Please upload official corporate documents (Commercial Register, Tax Card, Import/Export License) to start customs verification.",
+      "uploadDocsBtn": "Upload Documents Now"
     },
     "accountStatus": {
       "active": "Active",

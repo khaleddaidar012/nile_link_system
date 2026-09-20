@@ -37,7 +37,7 @@ const footerLinks = [
 ]
 
 const socialLinks = [
-  { label: "Facebook", href: "https://www.facebook.com/nilelinklogistics/", icon: FaFacebook },
+  { label: "Facebook", href: "https://www.facebook.com/nilelinklogistic", icon: FaFacebook },
   { label: "WhatsApp", href: "https://wa.me/201000018549", icon: FaWhatsapp },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/nilelinklogistics/about/?viewAsMember=true", icon: FaLinkedin },
   { label: "Email", icon: FaEnvelope },
@@ -164,10 +164,10 @@ export function Footer() {
                   <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary-400" />
                   <div>
                     <a
-                      href="tel:+20100018549"
+                      href="tel:+20572222008"
                       className="block text-sm text-secondary-400 transition-colors hover:text-primary-400"
                     >
-                      <span dir="ltr">+20 10 00018549</span>
+                      <span dir="ltr">+20 57 222 2008</span>
                     </a>
                   </div>
                 </div>

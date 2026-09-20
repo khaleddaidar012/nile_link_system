@@ -79,16 +79,16 @@ export function Navbar() {
       className={cn(
         "fixed top-0 right-0 left-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-white/90 shadow-premium backdrop-blur-xl dark:bg-secondary-900/90"
-          : "bg-transparent"
+          ? "bg-white shadow-premium backdrop-blur-xl dark:bg-secondary-900"
+          : "bg-white shadow-sm dark:bg-secondary-900"
       )}
     >
       <div className="hidden border-b border-white/10 bg-secondary-900 text-sm text-white/80 md:block dark:border-secondary-800">
         <Container className="flex items-center justify-between py-2">
           <div className="flex items-center gap-6">
-            <a href="tel:+20100018549" className="flex items-center gap-1.5 transition-colors hover:text-white">
+            <a href="tel:+20572222008" className="flex items-center gap-1.5 transition-colors hover:text-white">
               <Phone className="h-3.5 w-3.5" />
-              <span dir="ltr">+20 10 00018549</span>
+              <span dir="ltr">+20 57 222 2008</span>
             </a>
             <EmailLink className="flex items-center gap-1.5 transition-colors hover:text-white">
               <Mail className="h-3.5 w-3.5" />
@@ -113,24 +113,15 @@ export function Navbar() {
             </div>
             <span className="flex flex-col justify-center leading-none">
               <span
-                className={cn(
-                  "text-sm font-bold tracking-wide transition-colors sm:text-base",
-                  scrolled ? "text-secondary-900 dark:text-white" : "text-white"
-                )}
+                className="text-sm font-bold tracking-wide text-secondary-900 dark:text-white sm:text-base"
               >
                 Nile Link
               </span>
               <span
-                className={cn(
-                  "my-0.5 border-t w-full transition-colors",
-                  scrolled ? "border-primary-500" : "border-white/60"
-                )}
+                className="my-0.5 border-t w-full border-primary-500"
               />
               <span
-                className={cn(
-                  "flex w-full justify-between text-[9px] font-semibold uppercase transition-colors sm:text-[10px]",
-                  scrolled ? "text-secondary-600 dark:text-white" : "text-white"
-                )}
+                className="flex w-full justify-between text-[9px] font-semibold uppercase text-secondary-600 dark:text-white sm:text-[10px]"
               >
                 {"LOGISTICS".split("").map((l, i) => (
                   <span key={i}>{l}</span>
@@ -152,12 +143,8 @@ export function Navbar() {
                   className={cn(
                     "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
                     pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/")
-                      ? scrolled
-                        ? "text-primary-500"
-                        : "text-primary-300"
-                      : scrolled
-                        ? "text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900 dark:text-secondary-400 dark:hover:bg-secondary-800 dark:hover:text-white"
-                        : "text-white/80 hover:text-white"
+                      ? "text-primary-500"
+                      : "text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900 dark:text-secondary-400 dark:hover:bg-secondary-800 dark:hover:text-white"
                   )}
                 >
                   {t(item.label)}
@@ -198,12 +185,7 @@ export function Navbar() {
               <button
                 suppressHydrationWarning
                 onClick={() => setLangOpen(!langOpen)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  scrolled
-                    ? "text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800"
-                    : "text-white/80 hover:text-white"
-                )}
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800"
               >
                 <Globe className="h-4 w-4" />
                 {currentLang.label}
@@ -247,12 +229,7 @@ export function Navbar() {
               <button
                 suppressHydrationWarning
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={cn(
-                  "rounded-lg p-2 transition-colors",
-                  scrolled
-                    ? "text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800"
-                    : "text-white/80 hover:text-white"
-                )}
+                className="rounded-lg p-2 transition-colors text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800"
                 aria-label="Toggle theme"
               >
                 {theme === "dark" ? (
@@ -274,12 +251,7 @@ export function Navbar() {
             <button
               suppressHydrationWarning
               onClick={() => setMobileOpen(!mobileOpen)}
-              className={cn(
-                "rounded-lg p-2 lg:hidden",
-                scrolled
-                  ? "text-secondary-600 dark:text-secondary-400"
-                  : "text-white"
-              )}
+              className="rounded-lg p-2 lg:hidden text-secondary-600 dark:text-secondary-400"
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

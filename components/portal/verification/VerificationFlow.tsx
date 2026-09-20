@@ -24,7 +24,7 @@ import {
   CheckCircle,
 } from "lucide-react"
 import { useRouter } from "@/navigation"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
 
@@ -39,7 +39,19 @@ interface UserStatus {
 
 export function VerificationFlow() {
   const t = useTranslations()
+  const locale = useLocale()
   const router = useRouter()
+
+  // WhatsApp verification message per language
+  const whatsappMessages: Record<string, string> = {
+    ar: `مرحبا نايل لينك، انا اريد توثيق حسابي على المنصة وهذا هو رقم الواتس الخاص بي: ${"PHONE_PLACEHOLDER"}`,
+    en: `Hello NileLink, I would like to verify my account on the platform. My WhatsApp number is: ${"PHONE_PLACEHOLDER"}`,
+    fr: `Bonjour NileLink, je souhaite vérifier mon compte sur la plateforme. Mon numéro WhatsApp est : ${"PHONE_PLACEHOLDER"}`,
+    de: `Hallo NileLink, ich möchte mein Konto auf der Plattform verifizieren. Meine WhatsApp-Nummer lautet: ${"PHONE_PLACEHOLDER"}`,
+    it: `Ciao NileLink, vorrei verificare il mio account sulla piattaforma. Il mio numero WhatsApp è: ${"PHONE_PLACEHOLDER"}`,
+    zh: `您好 NileLink，我想在平台上验证我的账户。我的 WhatsApp 号码是：${"PHONE_PLACEHOLDER"}`,
+    bg: `Здравейте NileLink, искам да верифицирам акаунта си в платформата. Моят WhatsApp номер е: ${"PHONE_PLACEHOLDER"}`,
+  }
 
   const [loadingInitial, setLoadingInitial] = useState(true)
   const [userStatus, setUserStatus] = useState<UserStatus>({
@@ -71,10 +83,61 @@ export function VerificationFlow() {
   const [whatsappError, setWhatsappError] = useState<string | null>(null)
   const [whatsappSuccess, setWhatsappSuccess] = useState<string | null>(null)
   const [whatsappPreviewCode, setWhatsappPreviewCode] = useState<string | null>(null)
+  const [showWhatsappDrawer, setShowWhatsappDrawer] = useState(false)
 
   // Input refs
   const emailInputRefs = useRef<(HTMLInputElement | null)[]>([])
   const whatsappInputRefs = useRef<(HTMLInputElement | null)[]>([])
+  const autoSentEmailOtpRef = useRef(false)
+
+  // Send OTP
+  const handleSendOtp = async (channel: "email" | "whatsapp") => {
+    const isEmail = channel === "email"
+    const setLoading = isEmail ? setIsSendingEmailOtp : setIsSendingWhatsappOtp
+    const setError = isEmail ? setEmailError : setWhatsappError
+    const setSuccess = isEmail ? setEmailSuccess : setWhatsappSuccess
+    const setCooldown = isEmail ? setEmailCooldown : setWhatsappCooldown
+    const setPreview = isEmail ? setEmailPreviewCode : setWhatsappPreviewCode
+
+    setLoading(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channel }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || "Failed to send verification code")
+        return
+      }
+
+      if (isEmail) {
+        setSuccess(
+          data.message || "تم إرسال كود التفعيل إلى بريدك الإلكتروني بنجاح!"
+        )
+      } else {
+        setSuccess(null)
+      }
+      setCooldown(60)
+      if (data.previewCode) {
+        setPreview(data.previewCode)
+      }
+      if (isEmail) {
+        setTimeout(() => {
+          emailInputRefs.current[0]?.focus()
+        }, 100)
+      }
+    } catch {
+      setError("Network error. Please check your connection.")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Fetch initial verification status
   useEffect(() => {
@@ -92,6 +155,12 @@ export function VerificationFlow() {
             lastName: data.lastName,
           })
           setEditEmailValue(data.email || "")
+
+          // Auto-send OTP code when entering verification page
+          if (!data.emailVerified && !autoSentEmailOtpRef.current) {
+            autoSentEmailOtpRef.current = true
+            handleSendOtp("email")
+          }
         }
       } catch (err) {
         console.error("Failed to load verification status", err)
@@ -171,43 +240,6 @@ export function VerificationFlow() {
     }
   }
 
-  // Send OTP
-  const handleSendOtp = async (channel: "email" | "whatsapp") => {
-    const isEmail = channel === "email"
-    const setLoading = isEmail ? setIsSendingEmailOtp : setIsSendingWhatsappOtp
-    const setError = isEmail ? setEmailError : setWhatsappError
-    const setSuccess = isEmail ? setEmailSuccess : setWhatsappSuccess
-    const setCooldown = isEmail ? setEmailCooldown : setWhatsappCooldown
-    const setPreview = isEmail ? setEmailPreviewCode : setWhatsappPreviewCode
-
-    setLoading(true)
-    setError(null)
-    setSuccess(null)
-
-    try {
-      const res = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ channel }),
-      })
-
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data.error || "Failed to send verification code")
-        return
-      }
-
-      setSuccess(data.message || (isEmail ? "تم إرسال كود التفعيل إلى بريدك بنجاح!" : "تم إرسال رمز WhatsApp!"))
-      setCooldown(60)
-      if (data.previewCode) {
-        setPreview(data.previewCode)
-      }
-    } catch {
-      setError("Network error. Please check your connection.")
-    } finally {
-      setLoading(false)
-    }
-  }
 
   // Save updated email and re-send OTP
   const handleSaveEmailAndResend = async () => {
@@ -418,6 +450,7 @@ export function VerificationFlow() {
         <AnimatePresence>
           {isEditingEmail && !userStatus.emailVerified && (
             <motion.div
+              key="edit-email-form"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -509,6 +542,7 @@ export function VerificationFlow() {
             <AnimatePresence>
               {emailError && (
                 <motion.div
+                  key="email-error"
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
@@ -521,6 +555,7 @@ export function VerificationFlow() {
 
               {emailSuccess && (
                 <motion.div
+                  key="email-success"
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
@@ -647,28 +682,43 @@ export function VerificationFlow() {
               <span>مفعل</span>
             </span>
           ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={isSendingWhatsappOtp || whatsappCooldown > 0}
-              onClick={() => handleSendOtp("whatsapp")}
-              className="h-8 rounded-lg border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-            >
-              {isSendingWhatsappOtp ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : whatsappCooldown > 0 ? (
-                <span>إعادة إرسال ({whatsappCooldown}ث)</span>
-              ) : (
-                <span>توثيق الواتساب</span>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push("/portal")}
+                className="h-8 rounded-lg px-2.5 text-[11px] font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
+              >
+                <span>تخطي الآن</span>
+                <ChevronRight className="h-3 w-3 rtl:rotate-180 ml-1 rtl:ml-0 rtl:mr-1" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={isSendingWhatsappOtp || whatsappCooldown > 0}
+                onClick={() => {
+                  setShowWhatsappDrawer(true)
+                  handleSendOtp("whatsapp")
+                }}
+                className="h-8 rounded-lg border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+              >
+                {isSendingWhatsappOtp ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : whatsappCooldown > 0 ? (
+                  <span>إعادة إرسال ({whatsappCooldown}ث)</span>
+                ) : (
+                  <span>توثيق الواتساب</span>
+                )}
+              </Button>
+            </div>
           )}
         </div>
 
         {/* WhatsApp OTP Input Flow */}
         <AnimatePresence>
-          {!userStatus.whatsappVerified && (whatsappSuccess || whatsappError || isSendingWhatsappOtp) && (
+          {!userStatus.whatsappVerified && (showWhatsappDrawer || isSendingWhatsappOtp || whatsappError) && (
             <motion.div
+              key="whatsapp-otp-drawer"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -681,14 +731,26 @@ export function VerificationFlow() {
                 </div>
               )}
 
-              {whatsappSuccess && (
-                <div className="mb-4 flex items-center gap-2 rounded-2xl bg-emerald-50 p-3 text-xs font-bold text-emerald-800 border border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-900 dark:text-emerald-300">
-                  <CheckCircle className="h-4 w-4 shrink-0 text-emerald-600" />
-                  <span>{whatsappSuccess}</span>
-                </div>
-              )}
-
               {/* Dev Helper Preview Code (Hidden per user request) */}
+
+              <div className="mb-6 flex flex-col items-center justify-center rounded-2xl bg-slate-50/50 p-4 border border-slate-200/60 dark:bg-slate-800/30 dark:border-slate-700/60">
+                <p className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-3 text-center leading-relaxed">
+                  للحصول على كود التفعيل، يرجى التواصل معنا عبر الواتساب واطلب الكود الخاص برقمك:
+                  <br />
+                  <span className="font-mono text-emerald-600 dark:text-emerald-400 mt-1 inline-block" dir="ltr">{userStatus.phone}</span>
+                </p>
+                <a
+                  href={`https://wa.me/20572222008?text=${encodeURIComponent(
+                    (whatsappMessages[locale] || whatsappMessages["ar"]).replace("PHONE_PLACEHOLDER", userStatus.phone)
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-xl bg-emerald-500 px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-600 transition-colors"
+                >
+                  <Phone className="h-4 w-4" />
+                  <span>طلب كود التفعيل عبر الواتساب</span>
+                </a>
+              </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <div className="flex justify-between gap-1 sm:gap-2 dir-ltr" dir="ltr">
@@ -710,14 +772,24 @@ export function VerificationFlow() {
                   ))}
                 </div>
 
-                <Button
-                  type="button"
-                  disabled={isVerifyingWhatsapp || whatsappOtp.join("").length !== 6}
-                  onClick={() => handleVerifyOtp("whatsapp")}
-                  className="w-full sm:w-auto flex-1 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
-                >
-                  {isVerifyingWhatsapp ? <Loader2 className="h-4 w-4 animate-spin" /> : "تأكيد الرمز"}
-                </Button>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Button
+                    type="button"
+                    disabled={isVerifyingWhatsapp || whatsappOtp.join("").length !== 6}
+                    onClick={() => handleVerifyOtp("whatsapp")}
+                    className="flex-1 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
+                  >
+                    {isVerifyingWhatsapp ? <Loader2 className="h-4 w-4 animate-spin" /> : "تأكيد الرمز"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => router.push("/portal")}
+                    className="rounded-xl px-3 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
+                  >
+                    تخطي الآن
+                  </Button>
+                </div>
               </div>
             </motion.div>
           )}

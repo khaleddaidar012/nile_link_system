@@ -1,8 +1,10 @@
 import { EmailConfig, EmailProvider } from "../types"
 import { createSmtpProvider } from "./smtp"
+import { createResendProvider } from "./resend"
 
 const providers: Record<string, (config: EmailConfig) => EmailProvider> = {
   smtp: createSmtpProvider,
+  resend: createResendProvider,
 }
 
 export function getProvider(config: EmailConfig): EmailProvider {

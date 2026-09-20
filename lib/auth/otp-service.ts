@@ -116,15 +116,20 @@ export async function dispatchOtpNotification({
       console.log(`Code: ${code}`)
       console.log(`==================================================\n`)
 
-      const smtpConfigured = !!(process.env.SMTP_HOST || process.env.EMAIL_SERVER_HOST)
-      if (smtpConfigured) {
+      const emailConfigured = !!(
+        process.env.SMTP_HOST ||
+        process.env.EMAIL_SERVER_HOST ||
+        process.env.RESEND_API_KEY ||
+        process.env.EMAIL_PROVIDER
+      )
+      if (emailConfigured) {
         try {
           const { sendEmail } = await import("@/lib/email/send")
           const emailHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; rounded: 12px;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
               <h2 style="color: #0f172a;">NileLink Security Verification</h2>
               <p>Hello ${recipientName},</p>
-              <p>Your 6-digit activation code is:</p>
+              <p>Your 6-digit ${purpose === "password_reset" ? "password reset" : "activation"} code is:</p>
               <div style="background-color: #f1f5f9; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #2563eb; margin: 20px 0; border-radius: 8px;">
                 ${code}
               </div>

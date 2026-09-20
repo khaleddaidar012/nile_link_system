@@ -15,19 +15,22 @@ export function HeroSection() {
     <section className="relative flex min-h-screen items-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="/images/hero-bg.jpg"
-          alt="Shipping containers at port"
+          src="/images/hero-ship-bg.jpg"
+          alt="Container ship at sea"
           fill
           sizes="100vw"
           priority
-          className="object-cover"
+          className="object-cover object-[80%_center] lg:object-[85%_center] xl:object-right"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-secondary-900/95 via-secondary-900/70 to-secondary-900/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary-900/40 to-transparent" />
+        {/* Uniform dark overlay — same as login page */}
+        <div className="absolute inset-0 z-10 bg-secondary-900/60" />
+        {/* Directional gradients for content readability */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-secondary-950/95 via-secondary-950/70 to-transparent rtl:bg-gradient-to-l rtl:from-secondary-950/95 rtl:via-secondary-950/70 rtl:to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-secondary-950/60 via-transparent to-secondary-950/30" />
       </div>
 
       <Container className="relative z-10 pt-32">
-        <div className="max-w-3xl">
+        <div className="max-w-xl lg:max-w-2xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -42,7 +45,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
+            className="text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl"
           >
             {t("title")}
           </motion.h1>

@@ -27,14 +27,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "User account not found." }, { status: 404 })
     }
 
-    // Dispatch OTP using unified service
-    const dispatch = await createAndSendUserOtp(user, channel, "account_verification")
-
-    if (!dispatch.success) {
-      return NextResponse.json(
-        { error: dispatch.error || "Failed to dispatch verification code." },
-        { status: 500 }
-      )
+    // Dispatch OTP using unified service for email, bypass for whatsapp (manual flow)
+    let dispatch: { success: boolean; error?: string; previewCode?: string } = { success: true, error: "", previewCode: "" }
+    
+    if (channel === "email") {
+      dispatch = await createAndSendUserOtp(user, channel, "account_verification")
+      if (!dispatch.success) {
+        return NextResponse.json(
+          { error: dispatch.error || "Failed to dispatch verification code." },
+          { status: 500 }
+        )
+      }
     }
 
     return NextResponse.json({
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest) {
       message:
         channel === "email"
           ? `Verification code dispatched to ${user.email}`
-          : `Verification code dispatched via WhatsApp to ${user.phone}`,
+          : `Verification code ready for WhatsApp verification`,
       previewCode: dispatch.previewCode,
       expiresInSeconds: 600,
     })

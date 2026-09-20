@@ -7,7 +7,7 @@ export const CONTACT = {
   PHONE: "+20100018549",
   PHONE_ALT: "+20100018549",
   WHATSAPP: "https://wa.me/201000018549",
-  FACEBOOK: "https://www.facebook.com/nilelinklogistics/",
+  FACEBOOK: "https://www.facebook.com/nilelinklogistic",
   LINKEDIN: "https://www.linkedin.com/company/nilelinklogistics/about/?viewAsMember=true",
   MAPS: "https://maps.google.com/?q=31.4038182,31.8101459",
 } as const
@@ -58,7 +58,7 @@ export const CONTACT_CHANNELS: ContactChannel[] = [
     title: "contact.channels.facebook.title",
     description: "contact.channels.facebook.description",
     value: "Nile Link Logistics",
-    href: "https://www.facebook.com/nilelinklogistics/",
+    href: "https://www.facebook.com/nilelinklogistic",
     icon: FaFacebook,
     external: true,
   },

@@ -7,7 +7,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<void> {
   const provider = getProvider(config)
 
   const result = await provider.send({
-    to: config.to,
+    to: options.to || config.to,
     subject: options.subject,
     html: options.html,
   })

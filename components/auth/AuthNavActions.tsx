@@ -81,12 +81,7 @@ export function AuthNavActions({ scrolled = false, isMobile = false, onMobileCli
       <Link href={portalUrl}>
         <Button
           size="sm"
-          className={cn(
-            "flex items-center gap-1.5 rounded-xl text-xs sm:text-sm px-2.5 sm:px-3.5 py-1.5 sm:py-2 font-bold shadow-md transition-all",
-            scrolled
-              ? "bg-primary-600 text-white hover:bg-primary-700"
-              : "border border-white/20 bg-white/15 text-white backdrop-blur-md hover:bg-white/25"
-          )}
+          className="flex items-center gap-1.5 rounded-xl text-xs sm:text-sm px-2.5 sm:px-3.5 py-1.5 sm:py-2 font-bold shadow-md transition-all bg-primary-600 text-white hover:bg-primary-700"
         >
           {isStaff ? <Shield className="h-3.5 w-3.5" /> : <LayoutDashboard className="h-3.5 w-3.5" />}
           <span>{portalLabel}</span>
@@ -119,12 +114,7 @@ export function AuthNavActions({ scrolled = false, isMobile = false, onMobileCli
       <Link href="/login">
         <Button
           size="sm"
-          className={cn(
-            "group relative flex items-center gap-1.5 overflow-hidden rounded-xl text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 font-bold shadow-md transition-all",
-            scrolled
-              ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-500 hover:to-primary-600 hover:shadow-lg hover:shadow-primary-500/25"
-              : "border border-white/30 bg-white/20 text-white backdrop-blur-md hover:bg-white/30 hover:shadow-lg hover:shadow-white/15"
-          )}
+          className="group relative flex items-center gap-1.5 overflow-hidden rounded-xl text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 font-bold shadow-md transition-all bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-500 hover:to-primary-600 hover:shadow-lg hover:shadow-primary-500/25"
         >
           {/* Professional Diagonal Shimmer Light Streak (Left to Right) */}
           <span className="pointer-events-none absolute inset-0 -top-2 -bottom-2 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shine-sweep transform-gpu" />

@@ -60,20 +60,22 @@ export async function POST(req: NextRequest) {
       user.emailVerificationOtpExpires = undefined
       await user.save()
     } else if (channel === "whatsapp") {
-      if (!user.whatsappVerificationCode || user.whatsappVerificationCode !== cleanCode) {
+      const phoneDigits = (user.phone || "").replace(/\D/g, "");
+      const base6Digits = phoneDigits.padStart(6, "0").slice(-6);
+      
+      // Calculate expected code: (last 6 digits + 123456) modulo 1,000,000 to keep it 6 digits
+      const expectedCodeNum = (parseInt(base6Digits, 10) + 123456) % 1000000;
+      const expectedCode = expectedCodeNum.toString().padStart(6, "0");
+
+      if (cleanCode !== expectedCode) {
         return NextResponse.json(
-          { error: "Invalid WhatsApp verification code. Please check and try again." },
-          { status: 400 }
-        )
-      }
-      if (user.whatsappVerificationExpires && user.whatsappVerificationExpires < now) {
-        return NextResponse.json(
-          { error: "WhatsApp verification code has expired. Please request a new code." },
+          { error: "رمز التفعيل غير صحيح. يرجى التأكد من الرمز الذي تم إرساله إليك عبر الواتساب." },
           { status: 400 }
         )
       }
 
       user.whatsappVerified = true
+      // Clear legacy fields if they exist
       user.whatsappVerificationCode = undefined
       user.whatsappVerificationExpires = undefined
       await user.save()

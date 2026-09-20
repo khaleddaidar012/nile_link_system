@@ -190,6 +190,8 @@ export async function POST(req: NextRequest) {
       firstName: user.firstName,
       lastName: user.lastName,
       staffPermissions: user.staffPermissions,
+      emailVerified: user.emailVerified ?? false,
+      whatsappVerified: user.whatsappVerified ?? false,
     })
 
     const refreshToken = await createRefreshToken({
@@ -199,6 +201,8 @@ export async function POST(req: NextRequest) {
       customerId: user.customerId ? user.customerId.toString() : null,
       firstName: user.firstName,
       lastName: user.lastName,
+      emailVerified: user.emailVerified ?? false,
+      whatsappVerified: user.whatsappVerified ?? false,
     })
 
     const response = NextResponse.json({
