@@ -157,10 +157,18 @@ export async function POST(req: NextRequest) {
 
     setAuthCookies(response, accessToken, refreshToken, true)
     return response
-  } catch (error: unknown) {
-    console.error("Registration error:", error)
+  } catch (error: any) {
+    console.error("Registration error FULL:", {
+      message: error?.message,
+      name: error?.name,
+      stack: error?.stack,
+      cause: error?.cause
+    })
     return NextResponse.json(
-      { error: "Internal server error during registration" },
+      { 
+        error: "Internal server error during registration", 
+        debugMsg: error?.message || String(error)
+      },
       { status: 500 }
     )
   }
