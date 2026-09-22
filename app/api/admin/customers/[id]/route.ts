@@ -67,6 +67,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({
       success: true,
+      currentUserRole: session.role,
       customer: {
         id: customer._id.toString(),
         companyName: customer.companyName,
@@ -117,6 +118,36 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     })
   } catch (error: unknown) {
     console.error("GET /api/admin/customers/[id] error:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: RouteParams) {
+  try {
+    const session = await getSessionFromRequest(req)
+    if (!session || (session.role !== "super_admin" && session.role !== "staff")) {
+      return NextResponse.json({ error: "Unauthorized. Only staff or super_admin can perform this action." }, { status: 403 })
+    }
+
+    const { id } = await params
+    await connectDB()
+
+    const customer = await Customer.findById(id)
+    if (!customer) {
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 })
+    }
+
+    // Delete associated records to completely free up the email and clean DB
+    await User.deleteMany({ customerId: customer._id })
+    await DocumentModel.deleteMany({ customerId: customer._id })
+    await Invoice.deleteMany({ customerId: customer._id })
+
+    // Delete the customer record itself
+    await Customer.findByIdAndDelete(id)
+
+    return NextResponse.json({ success: true, message: "Customer and all associated records deleted permanently." })
+  } catch (error: unknown) {
+    console.error("DELETE /api/admin/customers/[id] error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

@@ -71,7 +71,7 @@ export function CustomerOverviewTable() {
   }, [search, statusFilter])
 
   const handleRowClick = (customer: CustomerAdminItem) => {
-    router.push(`/${locale}/admin/customers/${customer.id}`)
+    router.push(`/admin/customers/${customer.id}`)
   }
 
   const renderStatusBadge = (status: string, reason?: string) => {

@@ -73,6 +73,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
   const router = useRouter()
 
   const [data, setData] = useState<{
+    currentUserRole?: string
     customer: CustomerDetailData
     users: any[]
     complianceStats: {
@@ -159,6 +160,31 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
     }
   }
 
+  const handleDeleteCustomer = async () => {
+    if (!customerId) return
+    const confirmed = window.confirm(
+      isEn 
+        ? "Are you sure you want to permanently delete this customer and all associated users, documents, and invoices? This action cannot be undone." 
+        : "هل أنت متأكد من حذف هذا العميل وجميع المستخدمين والمستندات والفواتير المرتبطة به نهائياً؟ هذا الإجراء لا يمكن التراجع عنه."
+    )
+    if (!confirmed) return
+
+    try {
+      const res = await fetch(`/api/admin/customers/${customerId}`, {
+        method: "DELETE",
+      })
+      if (res.ok) {
+        alert(isEn ? "Customer deleted successfully" : "تم حذف العميل بنجاح")
+        router.push(`/admin/customers`)
+      } else {
+        const errData = await res.json()
+        alert(errData.error || "Failed to delete customer")
+      }
+    } catch {
+      alert("Network error deleting customer")
+    }
+  }
+
   const handleReviewDocClick = (doc: CustomerDocumentItem) => {
     if (!data) return
     setReviewDocTarget({
@@ -192,14 +218,14 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
       <div className="border-b border-secondary-200 bg-white px-6 py-4 dark:border-secondary-800 dark:bg-secondary-900">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.push(`/${locale}/admin/customers`)}
+            onClick={() => router.push(`/admin/customers`)}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-secondary-200 bg-white text-secondary-500 hover:bg-secondary-50 hover:text-secondary-900 transition-colors dark:border-secondary-700 dark:bg-secondary-800 dark:hover:bg-secondary-700 dark:text-secondary-300 dark:hover:text-white"
           >
             {isEn ? <ArrowLeft className="h-5 w-5" /> : <ArrowRight className="h-5 w-5" />}
           </button>
           <div>
             <div className="flex items-center gap-2 text-xs font-medium text-secondary-500 dark:text-secondary-400">
-              <span className="cursor-pointer hover:text-primary-600 transition-colors" onClick={() => router.push(`/${locale}/admin/customers`)}>
+              <span className="cursor-pointer hover:text-primary-600 transition-colors" onClick={() => router.push(`/admin/customers`)}>
                 {t("admin.customers.pageTitle") || "Customers"}
               </span>
               <span>/</span>
@@ -211,6 +237,16 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
               {t("admin.customers.detailTitle") || (isEn ? "Customer Compliance Details" : "تفاصيل التزام العميل")}
             </h1>
           </div>
+          <div className="flex-1" />
+          {(data?.currentUserRole === "super_admin" || data?.currentUserRole === "staff") && (
+            <button
+              onClick={handleDeleteCustomer}
+              className="flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-2 text-sm font-bold text-rose-600 transition-colors hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-900/60"
+            >
+              <XCircle className="h-4 w-4" />
+              {isEn ? "Delete Customer" : "حذف العميل نهائياً"}
+            </button>
+          )}
         </div>
       </div>
 

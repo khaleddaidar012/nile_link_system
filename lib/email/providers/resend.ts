@@ -8,6 +8,14 @@ export function createResendProvider(config: EmailConfig): EmailProvider {
       const apiKey = config.resendApiKey || process.env.RESEND_API_KEY
 
       if (!apiKey) {
+        if (process.env.NODE_ENV !== "production") {
+          console.log("\n==================================================")
+          console.log("[MOCK EMAIL DISPATCH] (No RESEND_API_KEY found)")
+          console.log(`To: ${options.to || config.to}`)
+          console.log(`Subject: ${options.subject}`)
+          console.log("==================================================\n")
+          return { success: true, messageId: "mock-id-dev" }
+        }
         return { success: false, error: "RESEND_API_KEY is not configured" }
       }
 

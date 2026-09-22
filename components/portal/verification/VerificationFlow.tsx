@@ -518,20 +518,23 @@ export function VerificationFlow() {
                 <ArrowRight className="mr-2 h-4 w-4 rtl:mr-0 rtl:ml-2 rtl:rotate-180" />
               </Button>
               {!userStatus.whatsappVerified && (
-                <Button
-                  variant="outline"
+                <a
+                  href={`https://wa.me/201000018549?text=${encodeURIComponent(
+                    (whatsappMessages[locale] || whatsappMessages["ar"]).replace("PHONE_PLACEHOLDER", userStatus.phone)
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => {
-                    handleSendOtp("whatsapp")
+                    setShowWhatsappDrawer(true)
                     setTimeout(() => {
                       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
                     }, 300)
                   }}
-                  disabled={isSendingWhatsappOtp || whatsappCooldown > 0}
-                  className="rounded-xl border-emerald-500/30 bg-white px-6 py-2 text-xs font-bold text-emerald-700 shadow-sm hover:bg-emerald-50 dark:bg-slate-900 dark:text-emerald-400 dark:border-emerald-900 w-full sm:w-auto"
+                  className="inline-flex items-center justify-center rounded-xl border border-emerald-500/30 bg-white px-6 py-2 text-xs font-bold text-emerald-700 shadow-sm hover:bg-emerald-50 dark:bg-slate-900 dark:text-emerald-400 dark:border-emerald-900 w-full sm:w-auto"
                 >
                   <Phone className="mr-2 h-4 w-4 text-emerald-500 rtl:mr-0 rtl:ml-2" />
-                  <span>{isSendingWhatsappOtp ? "جاري الإرسال..." : "الخطوة القادمة توثيق الواتس"}</span>
-                </Button>
+                  <span>الخطوة القادمة توثيق الواتس</span>
+                </a>
               )}
             </div>
           </div>
@@ -692,31 +695,26 @@ export function VerificationFlow() {
                 <span>تخطي الآن</span>
                 <ChevronRight className="h-3 w-3 rtl:rotate-180 ml-1 rtl:ml-0 rtl:mr-1" />
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={isSendingWhatsappOtp || whatsappCooldown > 0}
+              <a
+                href={`https://wa.me/201000018549?text=${encodeURIComponent(
+                  (whatsappMessages[locale] || whatsappMessages["ar"]).replace("PHONE_PLACEHOLDER", userStatus.phone)
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => {
                   setShowWhatsappDrawer(true)
-                  handleSendOtp("whatsapp")
                 }}
-                className="h-8 rounded-lg border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="inline-flex h-8 items-center justify-center rounded-lg border border-slate-200 px-3 text-[11px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
               >
-                {isSendingWhatsappOtp ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : whatsappCooldown > 0 ? (
-                  <span>إعادة إرسال ({whatsappCooldown}ث)</span>
-                ) : (
-                  <span>توثيق الواتساب</span>
-                )}
-              </Button>
+                توثيق الواتساب
+              </a>
             </div>
           )}
         </div>
 
         {/* WhatsApp OTP Input Flow */}
         <AnimatePresence>
-          {!userStatus.whatsappVerified && (showWhatsappDrawer || isSendingWhatsappOtp || whatsappError) && (
+          {!userStatus.whatsappVerified && (showWhatsappDrawer || whatsappError) && (
             <motion.div
               key="whatsapp-otp-drawer"
               initial={{ height: 0, opacity: 0 }}
@@ -740,7 +738,7 @@ export function VerificationFlow() {
                   <span className="font-mono text-emerald-600 dark:text-emerald-400 mt-1 inline-block" dir="ltr">{userStatus.phone}</span>
                 </p>
                 <a
-                  href={`https://wa.me/20572222008?text=${encodeURIComponent(
+                  href={`https://wa.me/201000018549?text=${encodeURIComponent(
                     (whatsappMessages[locale] || whatsappMessages["ar"]).replace("PHONE_PLACEHOLDER", userStatus.phone)
                   )}`}
                   target="_blank"

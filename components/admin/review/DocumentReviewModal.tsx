@@ -480,6 +480,37 @@ export function DocumentReviewModal({ document, onClose, onSuccess }: DocumentRe
                 <Maximize2 className="mr-1.5 h-3.5 w-3.5 rtl:mr-0 rtl:ml-1.5 text-primary-500" />
                 <span>{t("documents.previewModal.openFullScreen") || "Inspect Fullscreen"}</span>
               </Button>
+              
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isSubmitting}
+                onClick={async () => {
+                  if (confirm(t("admin.review.confirmDelete") || "Are you sure you want to permanently delete this document? It will disappear from the customer's portal as if it was never uploaded.")) {
+                    setIsSubmitting(true)
+                    try {
+                      const res = await fetch(`/api/admin/documents/${document.id}`, {
+                        method: "DELETE",
+                      })
+                      if (res.ok) {
+                        if (onSuccess) onSuccess()
+                        onClose()
+                      } else {
+                        const data = await res.json()
+                        setError(data.error || "Failed to delete document")
+                      }
+                    } catch {
+                      setError("Network error deleting document")
+                    } finally {
+                      setIsSubmitting(false)
+                    }
+                  }
+                }}
+                className="rounded-xl border-rose-200 bg-rose-50 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/60"
+              >
+                <XCircle className="mr-1.5 h-3.5 w-3.5 rtl:mr-0 rtl:ml-1.5 text-rose-500" />
+                <span>{t("common.delete") || "Hard Delete"}</span>
+              </Button>
             </div>
 
             <div className="flex items-center gap-3">

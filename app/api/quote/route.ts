@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: "An error occurred. Please try again later." },
+      { success: false, message: error instanceof Error ? error.message : "An error occurred. Please try again later." },
       { status: 500 }
     )
   }

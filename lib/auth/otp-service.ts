@@ -120,7 +120,8 @@ export async function dispatchOtpNotification({
         process.env.SMTP_HOST ||
         process.env.EMAIL_SERVER_HOST ||
         process.env.RESEND_API_KEY ||
-        process.env.EMAIL_PROVIDER
+        process.env.EMAIL_PROVIDER ||
+        process.env.NODE_ENV !== "production"
       )
       if (emailConfigured) {
         try {

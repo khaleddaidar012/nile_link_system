@@ -33,7 +33,7 @@ export function QuoteInfo() {
           <div className="flex gap-3">
             <Phone className="mt-0.5 h-5 w-5 shrink-0 text-primary-500" />
             <div>
-              <a href="tel:+20100018549" className="block text-sm text-secondary-600 transition-colors hover:text-primary-500 dark:text-secondary-400"><span dir="ltr">+20 10 00018549</span></a>
+              <a href="tel:0572222008" className="block text-sm text-secondary-600 transition-colors hover:text-primary-500 dark:text-secondary-400"><span dir="ltr">057 222 2008</span></a>
             </div>
           </div>
 
