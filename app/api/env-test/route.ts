@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export async function GET() {
   let cfEnv = {}
   try {
@@ -11,6 +14,8 @@ export async function GET() {
   }
 
   return NextResponse.json({ 
+    buildVersion: "v3-keep-vars",
+    timestamp: new Date().toISOString(),
     envKeys: Object.keys(process.env),
     cfEnvKeys: Object.keys(cfEnv),
     checks: {
