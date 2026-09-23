@@ -102,7 +102,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
     try {
       const res = await fetch(`/api/admin/customers/${id}`)
       if (res.ok) {
-        const json = await res.json()
+        const json = (await res.json()) as any
         
         // Sort documents by newest first
         if (json.documents) {
@@ -112,8 +112,8 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
         }
         
         setData(json)
-        setNewStatus(json.customer.accountStatus)
-        setStatusReason(json.customer.statusReason || "")
+        setNewStatus(json.customer?.accountStatus)
+        setStatusReason(json.customer?.statusReason || "")
       }
     } catch {
       // Ignore
@@ -150,7 +150,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
       if (res.ok) {
         await fetchCustomerDetail(customerId)
       } else {
-        const errData = await res.json()
+        const errData = (await res.json()) as any
         alert(errData.error || "Status update failed")
       }
     } catch {
@@ -177,7 +177,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ local
         alert(isEn ? "Customer deleted successfully" : "تم حذف العميل بنجاح")
         router.push(`/admin/customers`)
       } else {
-        const errData = await res.json()
+        const errData = (await res.json()) as any
         alert(errData.error || "Failed to delete customer")
       }
     } catch {
