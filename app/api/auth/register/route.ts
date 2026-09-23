@@ -166,7 +166,7 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json(
       { 
-        error: "Internal server error during registration", 
+        error: `Internal server error: ${error?.message || String(error)}`, 
         debugMsg: error?.message || String(error)
       },
       { status: 500 }

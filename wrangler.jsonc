@@ -2,13 +2,19 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "system-nilelink",
   "main": ".open-next/worker.js",
-  "compatibility_date": "2024-12-30",
+  "compatibility_date": "2025-04-01",
   "compatibility_flags": [
-    "nodejs_compat"
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
   ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
+  },
+  "vars": {
+    "EMAIL_FROM": "no-reply@nilelinklogistics.com",
+    "NEXT_PUBLIC_APP_URL": "https://system-nilelink.khaledhesham012.workers.dev/en",
+    "WHATSAPP_API_URL": "https://graph.facebook.com/v19.0/your_phone_number_id/messages"
   },
   "observability": {
     "logs": {
