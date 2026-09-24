@@ -12,7 +12,11 @@
     "binding": "ASSETS"
   },
   "vars": {
+    "AUTH_SECRET": "nilelink_production_secure_jwt_secret_key_2026_enterprise",
+    "CRON_SECRET": "nilelink_cron_secret_key_2026",
     "EMAIL_FROM": "no-reply@nilelinklogistics.com",
+    "JWT_SECRET": "nilelink_production_secure_jwt_secret_key_2026_enterprise",
+    "MONGODB_URI": "mongodb+srv://khaled:daidar@cluster0.ixyfdi0.mongodb.net/nilelink?appName=Cluster0&retryWrites=true&w=majority",
     "NEXT_PUBLIC_APP_URL": "https://system-nilelink.khaledhesham012.workers.dev/en",
     "WHATSAPP_API_URL": "https://graph.facebook.com/v19.0/your_phone_number_id/messages"
   },
